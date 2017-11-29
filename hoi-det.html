@@ -1,0 +1,1739 @@
+<html>
+  <head>
+    <title>Locate the human being and the object involved in certain activity in the picture</title>
+    <!-- simpleamt depends on these libraries -->
+    <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/json3/3.3.2/json3.min.js'></script>
+    <!-- end of required libraries -->
+    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js'></script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js'></script>
+    <link href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' rel='stylesheet'>
+    <style>
+      #text-area {
+        margin: 5px;
+        font-size: 9pt;
+        height: 80px;
+      }
+      #button-div {
+        margin-bottom: 5px;
+      }
+      #counter {
+        margin: 10px;
+        font-size: 20pt;
+        font-weight: bold;
+      }
+      img {
+        height: 350px;
+      }
+      #wrap {
+         width:1200px;
+         margin:0 auto;
+      }
+      #left_col {
+        margin: 0 0 0 20px;
+        float:left;
+        width:810px;
+      }
+      #right_col {
+        margin: 0 20px 0 0;
+        float:right;
+        width:330px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <!-- 
+    button colors:
+      btn-default  white
+      btn-primary  blue
+      btn-success  green
+      btn-info     cyan
+      btn-warning  yellow
+      btn-danger   red
+      btn-link     white (hyperlink)
+      btn-group    gray
+    -->
+
+    <!-- Instructions -->
+    <div class='container' style='width: 1200px;'>
+      <div class='panel panel-primary'>
+        <div class='panel-heading'><font size='3'><strong>Instructions &mdash; IMPORTANT: Read Before You Start</strong></font></div>
+
+        <div class='panel-body'>
+          <p>
+            <font size='3'>
+              You will be given <strong>pictures</strong> and their <strong>descriptions</strong>.
+              Each <strong>description</strong> will tell you a specific <strong><u>interaction</u></strong> between <strong><u>people</u></strong> and <strong><u>objects</u></strong> in the picture, for example, <strong><u>a person riding a bicycle</u></strong>.
+              Your task is to <strong>draw tight boxes around each person and each object involved in the given interaction</strong>, and <strong>link a person to an object if you see the interaction happening between them</strong>.
+            </font>
+          </p>
+
+          <!-- sample annotations -->
+          <div style="margin-top: 10pt; margin-bottom: 20pt;">
+            <center>
+              <h5>Sample annotations for the description &#34;<strong><u>A person riding a bicycle.</u></strong>&#34;</h5>
+              <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00000019.png' alt='tutorial1' style='height:200px;'>
+              <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00000667.png' alt='tutorial2' style='height:200px;'>
+              <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00001538.png' alt='tutorial3' style='height:200px;'>
+            </center>
+          </div>
+
+          <!--
+          <p>
+            <font size='3'>
+              For <strong>each picture</strong>, you have to <strong>first answer two starter questions</strong>, for example,
+              <br>
+              <span style="text-align: left; font-size: 14px; margin: 10px 0 10px 30px; display:block;">
+                Do you see more than five people? <br>
+                Do you see more than five bicycle? <br>
+              </span>
+              If you answer <strong>no on both</strong>, you should <strong>start annotating the picture</strong>. If you answer <strong>yes on at least one</strong>, you should <strong>skip the picture by clicking Next</strong>.
+            </font>
+          </p>
+          -->
+
+          <p style="margin-bottom: 16pt;"></p>
+          <p>
+            <font size='3'>
+              Once you start the annotation, your task for involves <strong>three steps</strong>:
+            </font>
+          </p>
+
+          <!-- Step 1 -->
+          <div style="margin-left: 16px;">
+            <p>
+              <font size='3'>
+                <strong>Step 1:</strong> <strong>Draw a tight box around each <u>person</u> involved in the interaction</strong>
+                &nbsp;<a id="pointer-phs1" style="cursor:pointer;">Click to expand</a>
+                <br>
+                For example, draw a tight box around each person riding bicycles; ignore all the people not riding bicycles.
+              </font>
+            </p>
+            <div class="collapse" id="expand-phs1" style="margin-bottom: 20pt;">
+              <ul>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step1_1.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px">
+                <div style="display: table;">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Draw a box</strong>
+                      <ol>
+                        <li>Hold down your left mouse button.</li>
+                        <li>Move the cursor around.</li>
+                        <li>Release your left mouse button.</li>
+                       </ol>
+                    </li>
+                  </div>
+                </div>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step1_2.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px; margin-top: 20px">
+                <div style="display: table; margin-top: 5px">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Adjust a box</strong>
+                      <ol>
+                        <li>Move the cursor to one vertex of the box you want to adjust. You will see the vertex becomes bigger.</li>
+                        <li>Hold down your left mouse button</li>
+                        <li>Move the cursor around.</li>
+                        <li>Releasing your left mouse button.</li>
+                      </ol>
+                    </li>
+                  </div>
+                </div>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step1_3.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px; margin-top: 10px">
+                <div style="display: table; margin-top: 15px">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Delete a box</strong>
+                      <ol>
+                        <li>Click on the box once. This will highlight the box.</li>
+                        <li>Click on the box again. This will delete the box.</li>
+                      </ol>
+                    </li>
+                  </div>
+                </div>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div style="margin-left: 16px;">
+            <p>
+              <font size='3'>
+                <strong>Step 2:</strong> <strong>Draw a tight box around each <u>object</u> involved in the interaction</strong>
+                &nbsp;<a id="pointer-phs2" style="cursor:pointer;">Click to expand</a>
+                <br>
+                For example, draw a tight box around each bicycle being ridden by people; ignore all the bicycles not being ridden.
+              </font>
+            </p>
+            <div class="collapse" id="expand-phs2" style="margin-bottom: 20pt;">
+              <ul>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step2_1.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px">
+                <div style="display: table;">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Draw a box</strong>
+                      <ol>
+                        <li>Hold down your left mouse button.</li>
+                        <li>Move the cursor around.</li>
+                        <li>Release your left mouse button.</li>
+                      </ol>
+                    </li>
+                  </div>
+                </div>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step2_2.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px; margin-top: 20px">
+                <div style="display: table; margin-top: 5px">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Adjust a box</strong>
+                      <ol>
+                        <li>Move the cursor to one vertex of the box you want to adjust. You will see the vertex becomes bigger.</li>
+                        <li>Hold down your left mouse button</li>
+                        <li>Move the cursor around.</li>
+                        <li>Releasing your left mouse button.</li>
+                      </ol>
+                    </li>
+                  </div>
+                </div>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step2_3.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px; margin-top: 10px">
+                <div style="display: table; margin-top: 15px">
+                  <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Delete a box</strong>
+                      <ol>
+                        <li>Click on the box once. This will highlight the box.</li>
+                        <li>Click on the box again. This will delete the box.</li>
+                      </ol>
+                    </li>
+                  </div>
+                </div>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div style="margin-left: 16px;">
+            <p>
+              <font size='3'>
+                <strong>Step 3:</strong> <strong>Link a person to an object if the <u>interaction</u> is happening between them</strong>.
+                &nbsp;<a id="pointer-phs3" style="cursor:pointer;">Click to expand</a>
+                <br>
+                For example, link a person to a bicycle if that person is riding that bicycle.
+              </font>
+            </p>
+            <div class="collapse" id="expand-phs3" style="margin-bottom: 20pt;">
+              <ol>
+                <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/step3_1.gif' alt='tutorial1' style="height: 75px; float: left; margin-right: 30px; margin-top: 5px">
+                <div style="display: table; margin-top: 5px">
+                   <div style="display: table-cell; vertical-align: middle;">
+                    <li>
+                      <strong>Select one person and draw links to all the objects which he/she is interacting with.</strong>
+                      <ol t ype="a">
+                        <li>Click on one person box. This will highlight the person.</li>
+                        <li>Click on one object box. This will draw a link from the person to the object.</li>
+                      </ol>
+                    </li>
+                    <li>
+                      <strong>Remove a link by clicking on the object box again.</strong>
+                    </li>
+                    <li>
+                      <strong>Switch to another person by clicking on another person box.</strong>
+                    </li>
+                    <li>
+                      <strong>Repeat until all the person boxes are done.</strong>
+                    </li>
+                  </div>
+                </div>
+              </ol>
+            </div>
+          </div>
+
+          <p>
+            <font size='3'>
+              If the person or object involved in the interaction is <strong>not visible in the picture</strong>, you should <strong>check the square box under Reset</strong> and <strong>skip the picture</strong>.
+            </font>
+          </p>
+
+          <p style="margin-bottom: 16pt;"></p>
+          <!-- Notes -->
+          <p><font size='3'><strong>Notes</strong></font></p>
+          <ol>
+            <li>You are free to swtich between steps. You can always go back to previous steps if you need to make changes.</li>
+            <li>If a person or object is <strong>occluded</strong> or <strong>cut by the picture</strong>, draw a box only around its <strong>visible</strong> part.</li>
+            <li><strong>Do not draw box</strong> around <strong>people</strong> or <strong>object</strong> that is <strong>not involved in the interaction</strong>.</li>
+            <li>Make sure you link <strong>every person-object pair</strong> where you see the given interaction.</li>
+          </ol>
+
+          <!-- More Examples -->
+          <p>
+            <font size='3'>
+              <a id="pointer-ex" style="cursor: pointer; font-weight: bold;">Click to see more examples</a>
+            </font>
+          </p>
+          <div class="collapse" id="expand-ex" style="margin-bottom: 20pt;">
+            <center>
+              <table>
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 0px 0px 5px 0px;">
+                    If a person or object is <strong>occluded</strong> or <strong>cut by the picture</strong>, draw a box only around its <strong>visible</strong> part.
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person riding an airplane.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00003297.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person feeding a bird.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00004795.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person petting a bird.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00005403.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center; width: 220px">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person exiting an airplane.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00024354.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 0px 0px 5px 0px;">
+                    <strong>Do not draw box</strong> around <strong>people</strong> or <strong>object</strong> that is <strong>not involved in the interaction</strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person washing a bicycle</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_test2015_00004178.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person tying a boat.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00036117.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person repairing an umbrella.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00024148.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center; width: 200px">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person hosing a car.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_test2015_00006714.png' alt='tutorial1' style="height:180px; margin-bottom: 30px">
+                    </figure>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" style="text-align: center; padding: 0px 0px 5px 0px;">
+                    Link <strong>every person-object pair</strong> where you see the given interaction.
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person boarding an airplane.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00009719.png' alt='tutorial1' style="height:180px; margin-bottom: 10px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person chasing a bird.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00016667.png' alt='tutorial1' style="height:180px; margin-bottom: 10px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center;">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person herding a cow.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00006003.png' alt='tutorial1' style="height:180px; margin-bottom: 10px">
+                    </figure>
+                  </td>
+                  <td style="padding: 0px 2px 0px 2px; text-align: center; width: 200px">
+                    <figure>
+                      <figcaption style="text-align: center;"><h5><strong><u>A person eating at a dining table.</u></strong></h5></figcaption>
+                      <img src='http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/figures/anno_HICO_train2015_00000902.png' alt='tutorial1' style="height:180px; margin-bottom: 10px">
+                    </figure>
+                  </td>
+                </tr>
+              </table>
+            </center>
+          </div>
+
+          <p style="margin-bottom: 12pt;"></p>
+          <!-- Keyboard Interface -->
+          <p><font size='3'><strong>Keyboard interface</strong></font></p>
+          <ol>
+            <li><strong>G</strong> / <strong>A</strong>&nbsp; : &nbsp;Go to the next/previous picture.</li>
+            <li><strong>S</strong>: Switch to Step 1.</li>
+            <li><strong>D</strong>: Switch to Step 2.</li>
+            <li><strong>F</strong>: Switch to Step 3.</li>
+            <li><strong>R</strong>: Reset annotations on the current picture.</li>
+          </ol>
+
+          <p style="margin-bottom: 12pt;"></p>
+          <!-- warning -->
+          <font size='3'><strong><u>Warning</u></strong>: Rejection is possible if your accuracy is too low.</font>
+        </div>
+      </div>
+    </div>
+    <!-- End Instructions -->
+
+    <div class='container' style="width: 1200px; margin-bottom: 10pt">
+      <div class='panel panel-primary'>
+        <div class='panel-heading' style="color:#fff; background-color:#5cb85c; border-color:#4cae4c;"><font size='3'><strong>HIT Starts Here</strong></font></div>
+      </div>
+    </div>
+
+
+    <div class='container' style="display: table; width: 1000px; height: 50px; margin-bottom: 10pt">
+      <div style="display: table-cell; vertical-align: middle;">
+        <center>
+          <font size='6'>Description: <strong><u><span id="description"></span></u></strong></font>
+        </center>
+      </div>
+    </div>
+    <br>
+
+
+    <div id="wrap">
+      <div id="left_col">
+        <fieldset>
+          <!-- <div style="display: table; width: 810px; height: 975px; border:1px solid black;" onselectstart="return false"> -->
+          <div style="display: table; width: 810px; height: 810px; border:1px solid black;" onselectstart="return false">
+            <div style="display: table-cell; vertical-align: middle;">
+              <!-- image -->
+              <center><canvas id='segmentation_canvas' width=600 height=400></canvas></center>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="right_col">
+        <fieldset>
+          <!-- <div style="display: table; width: 330px; height: 975px; border:1px solid black;"> -->
+          <div style="display: table; width: 330px; height: 810px; border:1px solid black;">
+            <div style="display: table-cell; vertical-align: middle;">
+            <!-- <div style="display: table-cell;"> -->
+              <div>
+                <p style="margin-bottom: 10pt;"></p>
+              </div>
+              <!-- text area -->
+              <!--
+              <div class='col-xs-12 text-center'>
+                <center>
+                  <textarea id='text-area' class='form-control tb-margin' style="margin: 0pt; height: 240pt; margin-bottom: 30pt; resize: none;" disabled></textarea>
+                </center>
+              </div>
+              -->
+
+              <!-- <center> -->
+              <!-- <div style="width: 300px; padding: 8px 14px 16px 14px; margin-bottom: 30px; border: 2px solid; border-radius: 5px;"> -->
+                <!-- <div style="text-align: left; font-size: 14px;"> -->
+                  <!-- <div style="font-size: 16px; margin-bottom: 5px;"><strong>Note:</strong></div> -->
+                  <!-- <div>
+                    If you have done this task recently, you might notice this one is different:
+                    In the past ones you first answer questions about the number of people/objects, which might tell you to skip the picture.
+                    <u>The task here is same as the past ones</u>, but <u>you need to work on all the picture regardless of the number of people/objects</u>.
+                  </div> -->
+                  <!-- question title -->
+                  <!--<div style="font-size: 16px; margin-bottom: 5px;"><strong>Answer the questions first:</strong></div>-->
+                  <!-- question 1 -->
+                  <!--
+                  <div style="font-size: 13px;">Do you see more than five people?</div>
+                  <form id="form-1" style="text-align:center; margin-bottom: 0px">
+                    <input type="radio" name="ans-1" id="ans-1-y" value="y" style="width: 20px; height: 20px" disabled>
+                    <label for="ans-1-y" style="font-size: 18px;">Yes</label>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="ans-1" id="ans-1-n" value="n" style="width: 20px; height: 20px" disabled>
+                    <label for="ans-1-n" style="font-size: 18px;">No</label>
+                  </form>
+                  -->
+                  <!-- question 2 -->
+                  <!--
+                  <div style="font-size: 13px;">Do you see more than five <span class="obj-name"></span>?</div>
+                  <form id="form-2" style="text-align:center; margin-bottom: 5px;">
+                    <input type="radio" name="ans-2" id="ans-2-y" value="y" style="width: 20px; height: 20px" disabled>
+                    <label for="ans-2-y" style="font-size: 18px;">Yes</label>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="radio" name="ans-2" id="ans-2-n" value="n" style="width: 20px; height: 20px" disabled>
+                    <label for="ans-2-n" style="font-size: 18px;">No</label>
+                  </form>
+                  -->
+                  <!-- guiding sentence -->
+                  <!--<div>-->
+                    <!-- Click the button to skip this picture. -->
+                    <!-- Please start the annotation. -->
+                    <!--&nbsp;<span id="guide-radio"></span>-->
+                    <!-- <button id="skip" class="btn btn-lg btn-primary" style="padding: 5; font-size: 14px; float: right; margin-top: -6px" disabled>Skip</strong> -->
+                  <!--</div>-->
+                <!-- </div> -->
+              <!-- </div> -->
+              <!-- </center> -->
+
+              <!-- phase switch -->
+              <div class='col-xs-12 text-center'>
+                <center>
+                  <div style="display: table; width: 297px; height: 75px; margin-bottom: 10pt;">
+                    <div style="display: table-cell; vertical-align: middle;">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button id='phs1-btn' class='btn btn-lg btn-primary' style="width: 180pt;" disabled>Draw box <br>around person</button>&nbsp;<tt><strong>[S]</strong></tt>
+                    </div>
+                  </div>
+                  <div style="display: table; width: 297px; height: 75px; margin-bottom: 10pt;">
+                    <div style="display: table-cell; vertical-align: middle;">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button id='phs2-btn' class='btn btn-lg btn-success' style="width: 180pt;" disabled>Draw box <br>around <span class="obj-name"></span></button>&nbsp;<tt><strong>[D]</strong></tt>
+                    </div>
+                  </div>
+                  <div style="display: table; width: 297px; height: 75px; margin-bottom: 20pt;">
+                    <div style="display: table-cell; vertical-align: middle;">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <button id='phs3-btn' class='btn btn-lg btn-warning' style="width: 180pt;" disabled>Link person <br>to <span class="obj-name"></span></button>&nbsp;<tt><strong>[F]</strong></tt>
+                    </div>
+                  </div>
+                </center>
+              </div>
+              <!-- Reset -->
+              <div class='col-xs-12 text-center'>
+                <center>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <button id='reset-btn' class='btn btn-lg btn-danger' style="width: 180pt;" disabled>Reset on this picture</button>&nbsp;<tt><strong>[R]</strong></tt>
+                  <p style="margin-bottom: 20pt;"></p>
+                </center>
+              </div>
+              <!-- non-visibility check -->
+              <div class='col-xs-12 text-center'>
+                <center>
+                  <form>
+                    <input type="checkbox" id="not_vis" style="width: 36px; height: 36px; vertical-align: middle; position: relative; bottom: 15px; background-color: #9FFF9D; visibility: visible;" disabled>
+                    <div id="checkbox-label" style="width: 250px; display: inline-block; margin-left: 5px; text-align: left; font-size: 14px; vertical-align: middle;">
+                      Check this box if it is impossible to draw a box on person or <span class="obj-name"></span>. For example, if all people or all <span class="obj-name"></span> involved in the interaction is <strong>fully occluded or outside the picture</strong>.
+                      <p style="margin-bottom: 5pt;"></p>
+                      <!-- guiding sentence -->
+                      <span id="guide-check"></span>&nbsp;
+                    </div>
+                  </form>
+                  <p style="margin-bottom: 10pt"></p>
+                </center>
+              </div>
+              <!-- back / next -->
+              <div class='col-xs-12 text-center' id='button-div'>
+                <button id='prev-btn' class='btn btn-lg btn-primary' style="width: 79pt; margin-bottom: 3pt" disabled>Back</button> &nbsp;&nbsp;
+                <button id='next-btn' class='btn btn-lg btn-primary' style="width: 79pt; margin-bottom: 3pt" disabled>Next</button>
+                <br>
+                <tt><strong>[A]</strong></tt>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <tt><strong>[G]</strong></tt>
+                <p style="margin-bottom: 7pt;"></p>
+                <p>
+                  <span id='counter'>
+                    <span class='counter-top'></span> / <span class='counter-bottom'></span>
+                  </span>
+                </p>
+              </div>
+              <!-- submit -->
+              <div class='col-xs-12 text-center'>
+                {% include "simpleamt.html" %}
+                <!-- <link rel="import" href="simpleamt.html"> -->
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <!-- functions for instruction -->
+    <script>
+      $(function() {
+        $("#pointer-phs1").click(function(){ $("#expand-phs1").collapse('toggle'); });
+        $("#pointer-phs2").click(function(){ $("#expand-phs2").collapse('toggle'); });
+        $("#pointer-phs3").click(function(){ $("#expand-phs3").collapse('toggle'); });
+        $("#pointer-ex").click(function(){ $("#expand-ex").collapse('toggle'); });
+        $("#expand-phs1").on('shown.bs.collapse', function(){ $("#pointer-phs1").text('Click to Collapse'); });
+        $("#expand-phs2").on('shown.bs.collapse', function(){ $("#pointer-phs2").text('Click to Collapse'); });
+        $("#expand-phs3").on('shown.bs.collapse', function(){ $("#pointer-phs3").text('Click to collapse'); });
+        $("#expand-ex").on('shown.bs.collapse', function(){ $("#pointer-ex").text('Click to collapse'); });
+        $("#expand-phs1").on('hidden.bs.collapse', function(){ $("#pointer-phs1").text('Click to Expand'); });
+        $("#expand-phs2").on('hidden.bs.collapse', function(){ $("#pointer-phs2").text('Click to Expand'); });
+        $("#expand-phs3").on('hidden.bs.collapse', function(){ $("#pointer-phs3").text('Click to Expand'); });
+        $("#expand-ex").on('hidden.bs.collapse', function(){ $("#pointer-ex").text('Click to see more examples'); });
+      });
+    </script>
+
+    <script>
+      $(function() {
+
+        // Define some default input.
+        var DEFAULT_INPUT = [
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00000019.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00000202.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00000667.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00001538.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00004795.jpg', 'A person feeding a bird.', 'bird'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00001741.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00001762.jpg', 'A person riding a bicycle.', 'bicycle'],
+          ['http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/HICO_train2015_00002338.jpg', 'A person riding a bicycle.', 'bicycle']
+           ];
+
+        var input = null;
+
+        // is the image qualified for annotation
+        var ans_1 = [];
+        var ans_2 = [];
+
+        // is the person and object visible in the image
+        var not_vis = [];
+
+        // some variables to track state of the HIT.
+        var idx = 0;
+        var enabled = false;
+
+        // global variables for the page
+        var img;
+        var canvas_fix;
+        var ctx;
+
+        // cursor state
+        var cursor_x = 0;
+        var cursor_y = 0;
+        var mouse_down = false;
+
+        // task phase
+        var phase = [];
+
+        // returning rectangle stacks
+        //   Rectangles in each stack are sorted by area in ascending order
+        var return_rect_stack_1 = [];  // person
+        var return_rect_stack_2 = [];  // object
+
+        var concat_rect_stack = [];
+        var concat_rect_stack_ind = [];
+
+        // returning connection stacks
+        //   Indice are sorted in ascending order
+        var return_conn_stack = [];
+
+        // temporary variable for drawing rectangles
+        var raw_rect_x = new Array(4);
+        var raw_rect_y = new Array(4);
+
+        // drawing styles
+        var ln_clr_1 = 'blue';
+        var ln_clr_2 = 'lime';
+        var vt_clr = 'red';
+        var ln_width_fg = 4.0;
+        var ln_width_bg = 2.0;
+        var vt_width = 4.0;
+        var vt_width_bold = 8.0;
+
+        // bounding box adjustment
+        var adj_on = false;
+        var adj_rt_idx = -1
+        var adj_cand_rt = null;
+        var adj_cand_rt_idx = -1;  // required for draw_canvas()
+        var adj_cand_ln_clr = null;
+        var adj_cand_vt_idx = -1;
+        var adj_cand_vt_thres = 8;
+
+        // bounding box highlight
+        var hl_rt = null;
+        var hl_rt_idx = -1;
+        var hl_cand_rt = null;
+        var hl_cand_rt_idx = -1;
+        var hl_cand_ln_clr = null;
+        var hl_cand_opa = 0.3;
+        var hl_down_opa = 0.5;
+        var hl_draw = true;
+
+        // connection annotation
+        var conn_ln_clr = 'red';
+        var conn_ln_width_cand = 1.0;
+        var conn_ln_width_on = 4.0;
+        var conn_ln_opa_cand = 1;
+        var conn_ln_opa_on = 1;
+        var conn_cr_clr = 'red';
+        var conn_cr_rad = 4;
+
+        // Initalizing the canvas.
+        function init_canvas() {
+          // get canvas
+          img = new Image();
+          canvas_fix = document.getElementById('segmentation_canvas');
+          ctx = canvas_fix.getContext('2d');
+
+          // change the size of the canvas to the image size
+          img.onload = function() {
+            canvas_fix.width = this.width;
+            canvas_fix.height = this.height;
+            draw_canvas();
+          }
+          img.src = input[idx][0];
+
+          // monitor user input
+          if (ans_1[idx] == 'n' && ans_2[idx] == 'n') {
+            canvas_fix.onmousemove = mousemove_canvas_rect;
+            canvas_fix.onmousedown = mousedown_canvas_rect;
+            canvas_fix.onmouseup = mouseup_canvas_rect;
+          }
+          else {
+            reset_annotation();
+            canvas_fix.onmousemove = function(){ return false; }
+            canvas_fix.onmousedown = function(){ return false; }
+            canvas_fix.onmouseup = function(){ return false; }
+          }
+
+          // render
+          render();
+        }
+
+        // Draw canvas.
+        function draw_canvas() {
+          // Draw the image
+          ctx.clearRect(0, 0, canvas_fix.width, canvas_fix.height);
+          draw_image();
+
+          // Draw boxes in stack 1
+          $.each(return_rect_stack_1[idx], function(index, clean_rect) {
+            // Skip the one that is currently being adjusted
+            if (phase[idx] == 1 && adj_on && index == adj_rt_idx) { return true; }
+            if (phase[idx] == 1) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_1, ln_width_fg, true); }
+            if (phase[idx] == 2) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_1, ln_width_bg, false); }
+            if (phase[idx] == 3) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_1, ln_width_bg, false); }
+          })
+
+          // Draw boxes in stack 2
+          $.each(return_rect_stack_2[idx], function(index, clean_rect) {
+            // Skip the one that is currently being adjusted
+            if (phase[idx] == 2 && adj_on && index == adj_rt_idx) { return true; }
+            if (phase[idx] == 1) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_2, ln_width_bg, false); }
+            if (phase[idx] == 2) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_2, ln_width_fg, true); }
+            if (phase[idx] == 3) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_2, ln_width_bg, false); }
+          })
+
+          // Draw connected box
+          if (phase[idx] == 3) {
+            for (var i = 0; i < return_rect_stack_1[idx].length; i++) {
+              if (hl_rt && i == concat_rect_stack_ind[idx][hl_rt_idx][1]) { draw_conn_hl(i, ln_width_fg); }
+            }
+          }
+
+          // Draw highlight box
+          if (hl_draw && hl_rt) {
+            if (phase[idx] == 1) { fill_rect(hl_rt[0], hl_rt[1], ln_clr_1, hl_down_opa, ln_width_fg, true); }
+            if (phase[idx] == 2) { fill_rect(hl_rt[0], hl_rt[1], ln_clr_2, hl_down_opa, ln_width_fg, true); }
+            if (phase[idx] == 3) { fill_rect(hl_rt[0], hl_rt[1], ln_clr_1, hl_down_opa, ln_width_bg, false); }
+          }
+
+          // Draw connected line and circle
+           if (phase[idx] == 3) {
+            for (var i = 0; i < return_rect_stack_1[idx].length; i++) {
+              if (hl_rt && i == concat_rect_stack_ind[idx][hl_rt_idx][1]) {
+                draw_conn_ln(i, conn_ln_width_on, conn_ln_opa_on);
+              }
+              else {
+                draw_conn_ln(i, conn_ln_width_cand, conn_ln_opa_cand);
+              }
+            }
+          }
+        }
+
+        // Draw image.
+        function draw_image() {
+          ctx.drawImage(img, 0, 0, canvas_fix.width, canvas_fix.height);
+        }
+
+        // Do something as the cursor moves across the canvas
+        function mousemove_canvas_rect(event) {
+          draw_canvas();
+
+          // Get current cursor coordinates
+          grab_xy(event);
+
+          // Phase 1 and Phase 2 only
+          if (phase[idx] == 1 || phase[idx] == 2) {
+            // Draw bounding box
+            if (mouse_down) {
+              raw_rect_x[2] = cursor_x;
+              raw_rect_y[2] = cursor_y;
+              
+              clean_rect = clean_up_raw_rect();
+
+              if (phase[idx] == 1) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_1, ln_width_fg, true); }
+              if (phase[idx] == 2) { draw_rect(clean_rect[0], clean_rect[1], ln_clr_2, ln_width_fg, true); }
+            }
+
+            // Adjust bounding box
+            if (!mouse_down) {
+              get_closest_vertex_idx();
+
+              if (adj_cand_rt) {
+                bold_point(adj_cand_rt[0][adj_cand_vt_idx], adj_cand_rt[1][adj_cand_vt_idx]);
+              }
+            }
+          }
+
+          // Highlight bounding box
+          if (!mouse_down) {
+            get_highlight_rect();
+
+            if (hl_cand_rt && !adj_cand_rt) {
+              if (hl_rt_idx == hl_cand_rt_idx) {
+                // Do not add further effects if the box is currently highlighted
+              }
+              else {
+                // Draw highlight
+                if (phase[idx] == 1) { fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_fg, true); }
+                if (phase[idx] == 2) { fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_fg, true); }
+                if (phase[idx] == 3) {
+                  fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_bg, false);
+
+                  // Re-draw connected line and circle on top
+                  //  This might cause unwanted effects if the opacity if not 1
+                  if (hl_rt && concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 2) {
+                    rt_idx_1 = concat_rect_stack_ind[idx][hl_rt_idx][1];
+                    rt_idx_2 = concat_rect_stack_ind[idx][hl_cand_rt_idx][1];
+                    if (return_conn_stack[idx][rt_idx_1].indexOf(rt_idx_2) != -1) {
+                      draw_conn_ln(rt_idx_1, conn_ln_width_on, conn_ln_opa_on);
+                    }
+                  }
+                }
+              }
+            }
+          }
+          else {
+            // Make sure highlight is always off when the cursor starts being dragged
+            hl_rt = null;
+            hl_rt_idx = -1;
+          }
+        }
+
+        // Do something when the left key of the mouse is hit
+        function mousedown_canvas_rect(event) {
+          // Set cursor state
+          if (!mouse_down) {
+            raw_rect_x[0] = cursor_x;
+            raw_rect_y[0] = cursor_y;
+            mouse_down = true;
+          }
+
+          // Phase 1 and Phase 2 only
+          if (phase[idx] == 1 || phase[idx] == 2) {
+            // Adjust bounding box
+            if (adj_cand_rt) {
+              raw_rect_x[0] = adj_cand_rt[0][(adj_cand_vt_idx + 2) % 4];
+              raw_rect_y[0] = adj_cand_rt[1][(adj_cand_vt_idx + 2) % 4];
+
+              mouse_down = true;
+              adj_on = true;
+              adj_rt_idx = adj_cand_rt_idx;
+              hl_rt = null;
+              hl_rt_idx = -1;
+
+              draw_canvas();
+
+              raw_rect_x[2] = cursor_x;
+              raw_rect_y[2] = cursor_y;
+
+              clean_rect = clean_up_raw_rect();
+
+              draw_rect(clean_rect[0], clean_rect[1], adj_cand_ln_clr, ln_width_fg, true);
+            }
+          }
+
+          // Highlight bounding box
+          if (!adj_cand_rt) {
+            if (!hl_cand_rt) {
+              hl_rt = null;
+              hl_rt_idx = -1;
+              draw_canvas();
+            }
+            else {
+              if (hl_cand_rt_idx != hl_rt_idx) {
+                if (hl_rt) {
+                  // Phase 1 and Phase 2 only
+                  if (phase[idx] == 1 || phase[idx] == 2) {
+                    hl_draw = false;
+                    draw_canvas();
+                    hl_draw = true;
+                  }
+                  // Phase 3 only
+                  if (phase[idx] == 3) {
+                    if (concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 1) {
+                      hl_draw = false;
+                      draw_canvas();
+                      hl_draw = true;
+                    }
+                    else {
+                      // Create effect for adding connection
+                    }
+                  }
+                }
+              }
+              // Draw highlight
+              if (phase[idx] == 1) { fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_fg, true); }
+              if (phase[idx] == 2) { fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_fg, true); }
+              if (phase[idx] == 3) { fill_rect(hl_cand_rt[0], hl_cand_rt[1], hl_cand_ln_clr, hl_cand_opa, ln_width_bg, false); }
+
+              // Draw connection
+              if (phase[idx] == 3) {
+                if (concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 1) {
+                  rt_idx_1 = concat_rect_stack_ind[idx][hl_cand_rt_idx][1];
+                  draw_conn_hl(rt_idx_1, ln_width_bg);
+                }
+              }
+            }
+          }
+        }
+
+        // Do something when the left key of the mouse is lifted
+        function mouseup_canvas_rect(event) {
+          // Response only if the click is on the canvas
+          if (mouse_down) {
+            // Save cursor coordinates
+            raw_rect_x[2] = cursor_x;
+            raw_rect_y[2] = cursor_y;
+
+            // Phase 1 and Phase 2 only
+            if (phase[idx] == 1 || phase[idx] == 2) {
+              // Save bounding box to stack
+              if (raw_rect_x[2] != raw_rect_x[0] ||
+                  raw_rect_y[2] != raw_rect_y[0]) {
+                save_rect_to_stack();
+                update_concat_stack();
+              }
+            }
+
+            // Highlight bounding box
+            if (raw_rect_x[2] == raw_rect_x[0] &&
+                raw_rect_y[2] == raw_rect_y[0]) {
+              if (hl_cand_rt) {
+                // Phase 1 and Phase 2 only
+                if (phase[idx] == 1 || phase[idx] == 2) {
+                  if (hl_cand_rt_idx != hl_rt_idx) {
+                    // Highlight box
+                    hl_rt = hl_cand_rt;
+                    hl_rt_idx = hl_cand_rt_idx;
+                  }
+                  else {
+                    // Remove box
+                    remove_rect_from_stack(hl_rt_idx);
+                    update_concat_stack();
+                    hl_rt = null;
+                    hl_rt_idx = -1;
+                    // Prevent unwanted effects when triple click on a box
+                    hl_cand_rt = null;
+                    hl_cand_rt_idx = -1;
+                  }
+                }
+                // Phase 3 only: connection annotation
+                if (phase[idx] == 3) {
+                  if (hl_cand_rt_idx != hl_rt_idx) {
+                    // Change hl_rt
+                    if (concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 1) {
+                      // Highlight box
+                      hl_rt = hl_cand_rt;
+                      hl_rt_idx = hl_cand_rt_idx;
+                    }
+                    if (concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 2) {
+                      if (!hl_rt) {
+                        // Should not starts with an object
+                        alert('connection annotation error');
+                      }
+                      else {
+                        // Toggle connection
+                        conn = [concat_rect_stack_ind[idx][hl_rt_idx][1],
+                                concat_rect_stack_ind[idx][hl_cand_rt_idx][1]];
+                        toggle_conn(conn);
+                      }
+                    }
+                  }
+                  else {
+                    // Disable highlighted box
+                    hl_rt = null;
+                    hl_rt_idx = -1;
+                  }
+                }
+              }
+            }
+          }
+
+          // Set cursor state
+          mouse_down = false;
+          adj_on = false;
+          adj_rt_idx = -1;
+
+          // Display
+          draw_canvas();
+          render();
+        }
+
+        // Return the current point of the cursor.
+        function grab_xy(event) {
+          var ev = event || window.event;
+
+          var IE = document.all?true:false;
+          if (IE) { 
+            // Grab the x-y pos if browser is IE
+            cx = ev.clientX + document.body.scrollLeft;
+            cy = ev.clientY + document.body.scrollTop;
+          }
+          else {  
+            // Grab the x-y pos if browser is NS
+            cx = ev.pageX;
+            cy = ev.pageY;
+          }
+  
+          cx = cx - canvas_fix.offsetLeft;
+          cy = cy - canvas_fix.offsetTop;
+          if (cx < 0) { cx = 0; };
+          if (cy < 0) { cy = 0; };
+          if (cx > canvas_fix.width) { cx = canvas_fix.width };
+          if (cy > canvas_fix.height) { cy = canvas_fix.height };
+
+          cursor_x = Math.floor(cx);
+          cursor_y = Math.floor(cy);
+        }
+
+        // Save raw_rect to stack
+        function save_rect_to_stack() {
+          // Assertion
+          if (phase[idx] != 1 && phase[idx] != 2) { alert('phase error'); };
+
+          // Clean up rect
+          clean_rect = clean_up_raw_rect();
+
+          // Save
+          if (!adj_on) {
+            add_one_rect_to_stack(clean_rect);
+          }
+          else {
+            conn = remove_rect_from_stack(adj_rt_idx);
+            adj_rt_idx = add_one_rect_to_stack(clean_rect, conn);
+          }
+        }
+
+        // Reparse rect data into return_rect
+        function clean_up_raw_rect() {
+            // Complete raw rect
+            raw_rect_x[1] = raw_rect_x[0];
+            raw_rect_y[1] = raw_rect_y[2];
+            raw_rect_x[3] = raw_rect_x[2];
+            raw_rect_y[3] = raw_rect_y[0];
+
+            // Get min id
+            var min_val = raw_rect_x[0] + raw_rect_y[0];
+            var min_loc = 0;
+            for (var i = 1; i < 4; i++) {
+              if (min_val > raw_rect_x[i] + raw_rect_y[i]) {
+                min_val = raw_rect_x[i] + raw_rect_y[i];
+                min_loc = i;
+              }
+            }
+
+            // Create cleaned rect
+            var clean_rect_x = new Array(4);
+            var clean_rect_y = new Array(4);
+            clean_rect_x[0] = raw_rect_x[min_loc];
+            clean_rect_y[0] = raw_rect_y[min_loc];
+            clean_rect_x[2] = raw_rect_x[(min_loc + 2) % 4];
+            clean_rect_y[2] = raw_rect_y[(min_loc + 2) % 4];
+            clean_rect_x[1] = clean_rect_x[0];
+            clean_rect_y[1] = clean_rect_y[2];
+            clean_rect_x[3] = clean_rect_x[2];
+            clean_rect_y[3] = clean_rect_y[0];
+            
+            return [clean_rect_x, clean_rect_y];
+        }
+
+        // Add one rect to stack. Sort the stack by rect area in ascending order.
+        //   conn: (Phase 1) array of indices
+        //         (Phase 2) single rect index
+        function add_one_rect_to_stack(rect, conn) {
+          conn = conn || [];
+
+          if (phase[idx] == 1) { return_rect_stack = return_rect_stack_1[idx]; }
+          if (phase[idx] == 2) { return_rect_stack = return_rect_stack_2[idx]; }
+
+          area = get_rect_area(rect);
+          idx_in = return_rect_stack.length;
+          for (var i = 0; i < return_rect_stack.length; i++) {
+            area_i = get_rect_area(return_rect_stack[i]);
+            if (area_i > area) {
+              idx_in = i;
+              break;
+            }
+          }
+          // Add to return rect stack
+          return_rect_stack.splice(idx_in, 0, rect);
+
+          // Add to return conn
+          if (phase[idx] == 1) { return_conn_stack[idx].splice(idx_in, 0, conn); }
+          if (phase[idx] == 2) {
+            for (var i = 0; i < return_conn_stack[idx].length; i++) {
+              idx_conn = 0;
+              for (var j = return_conn_stack[idx][i].length - 1; j >= 0; j--) {
+                if (return_conn_stack[idx][i][j] >= idx_in) {
+                  return_conn_stack[idx][i][j]++;
+                }
+                else {
+                  idx_conn = j + 1;
+                  break;
+                }
+              }
+              if (conn.indexOf(i) != -1) { return_conn_stack[idx][i].splice(idx_conn, 0, idx_in); }
+            }
+          }
+
+          return idx_in;
+        }
+
+        // Compute rect area
+        function get_rect_area(rect) {
+          return (rect[0][2] - rect[0][0]) * (rect[1][2] - rect[1][0]);
+        }
+
+        // Draw rectangle edges and vertices
+        function draw_rect(clean_rect_x, clean_rect_y, ln_clr, ln_width, vt_on) {
+          // Set line style
+          ctx.strokeStyle = ln_clr;
+          ctx.lineWidth = ln_width;
+
+          // Draw the edges
+          for (var i = 0; i < 4; i++) {
+            ctx.beginPath();
+            ctx.moveTo(clean_rect_x[i % 4], clean_rect_y[i % 4]);
+            ctx.lineTo(clean_rect_x[(i + 1) % 4], clean_rect_y[(i + 1) % 4]);
+            ctx.stroke();
+          }
+
+          // Draw the vertices
+          if (vt_on) {
+            ctx.fillStyle = vt_clr;
+            for (var i = 0; i < 4; i++) {
+              ctx.fillRect(clean_rect_x[i] - vt_width, clean_rect_y[i] - vt_width, 2 * vt_width, 2 * vt_width);
+            }
+          }
+        }
+
+        // Detect if close to one of the vertices
+        function get_closest_vertex_idx() {
+          rt_idx = -1;
+          vt_idx = -1;
+          min_dist = 100000000;
+
+          if (phase[idx] == 1) { return_rect_stack = return_rect_stack_1[idx]; };
+          if (phase[idx] == 2) { return_rect_stack = return_rect_stack_2[idx]; };
+
+          $.each(return_rect_stack, function(index, clean_rect) {
+            for (var i = 0; i < 4; i++) {
+              temp_dist = Math.pow(cursor_x - clean_rect[0][i], 2) + Math.pow(cursor_y - clean_rect[1][i], 2)
+              if (temp_dist < min_dist) {
+                rt_idx = index;
+                vt_idx = i;
+                min_dist = temp_dist;
+              }
+            }
+          })
+
+          if (min_dist < Math.pow(adj_cand_vt_thres, 2)) {
+            adj_cand_rt = return_rect_stack[rt_idx];
+            adj_cand_rt_idx = rt_idx;
+            adj_cand_vt_idx = vt_idx;
+            if (phase[idx] == 1) { adj_cand_ln_clr = ln_clr_1; }
+            if (phase[idx] == 2) { adj_cand_ln_clr = ln_clr_2; }
+          }
+          else {
+            adj_cand_rt = null;
+            adj_cand_rt_idx = -1;
+            adj_cand_vt_idx = -1;
+            adj_cand_ln_clr = null;
+          }
+        }
+
+        // Make the target vertex bigger
+        function bold_point(x, y) {
+            ctx.fillStyle = vt_clr;
+            ctx.fillRect(x - vt_width_bold, y - vt_width_bold, 2 * vt_width_bold, 2 * vt_width_bold);
+        }
+
+        // Get highlighted rect. Use the newer one if there are overlapping boxes.
+        function get_highlight_rect() {
+          if (phase[idx] == 1) { return_rect_stack = return_rect_stack_1[idx]; };
+          if (phase[idx] == 2) { return_rect_stack = return_rect_stack_2[idx]; };
+          if (phase[idx] == 3) { return_rect_stack = concat_rect_stack[idx]; };
+
+          hl_cand_rt = null;
+          hl_cand_rt_idx = -1;
+          $.each(return_rect_stack, function(index, ret_rect) {
+            if (cursor_x >= ret_rect[0][0]
+                && cursor_y >= ret_rect[1][0]
+                && cursor_x <= ret_rect[0][2]
+                && cursor_y <= ret_rect[1][2]) {
+              // Should not start with an object
+              if (phase[idx] == 3 && !hl_rt && concat_rect_stack_ind[idx][index][0] == 2) { return false; }
+              hl_cand_rt = ret_rect;
+              hl_cand_rt_idx = index;
+              return false;
+            }
+          })
+
+          if (hl_cand_rt) {
+            if (phase[idx] == 1) { hl_cand_ln_clr = ln_clr_1; }
+            if (phase[idx] == 2) { hl_cand_ln_clr = ln_clr_2; }
+            if (phase[idx] == 3) {
+              if (concat_rect_stack_ind[idx][hl_cand_rt_idx][0] == 1) {
+                hl_cand_ln_clr = ln_clr_1;
+              }
+              else {
+                hl_cand_ln_clr = ln_clr_2;
+              }
+            }
+          }
+        }
+
+        // Fill rectangle given opacity
+        function fill_rect(clean_rect_x, clean_rect_y, clr, opa, ln_width, vt_on) {
+          ctx.fillStyle = clr;
+          ctx.globalAlpha = opa;
+          tx = clean_rect_x[0]
+          ty = clean_rect_y[0]
+          tw = clean_rect_x[2] - clean_rect_x[0]
+          th = clean_rect_y[2] - clean_rect_y[0]
+          ctx.fillRect(tx, ty, tw, th);
+          ctx.globalAlpha = 1;
+
+          // Assume we always need to draw edges or vertices when using fill_rect()
+          draw_rect(clean_rect_x, clean_rect_y, clr, ln_width, vt_on);
+        }
+
+        // Remove rect from stack
+        function remove_rect_from_stack(rt_idx) {
+          if (phase[idx] == 1) { return_rect_stack = return_rect_stack_1[idx]; }
+          if (phase[idx] == 2) { return_rect_stack = return_rect_stack_2[idx]; }
+
+          if (rt_idx < 0 || rt_idx >= return_rect_stack.length) {
+            alert('error removing rect from stack');
+          }
+          else {
+            // Remove from return rect stack
+            return_rect_stack.splice(rt_idx, 1);
+
+            // Remove from return conn; save the removed connection information to conn
+            if (phase[idx] == 1) {
+              conn = return_conn_stack[idx][rt_idx];
+              return_conn_stack[idx].splice(rt_idx, 1);
+            }
+            if (phase[idx] == 2) {
+              conn = [];
+              for (var i = 0; i < return_conn_stack[idx].length; i++) {
+                for (var j = return_conn_stack[idx][i].length - 1; j >= 0; j--) {
+                  if (return_conn_stack[idx][i][j] > rt_idx) {
+                    return_conn_stack[idx][i][j]--;
+                  }
+                  else {
+                    if (return_conn_stack[idx][i][j] == rt_idx) {
+                      return_conn_stack[idx][i].splice(j, 1);
+                      conn.push(i);
+                    }
+                    break;
+                  }
+                }
+              }
+            }
+          }
+          return conn;
+        }
+
+        // Update concat rect stack
+        function update_concat_stack() {
+          // get alias
+          stack_1 = return_rect_stack_1[idx];
+          stack_2 = return_rect_stack_2[idx];
+
+          // get area
+          area_1 = [];
+          area_2 = [];
+          for (var i = 0; i < stack_1.length; i++) { area_1[i] = get_rect_area(stack_1[i]); }
+          for (var i = 0; i < stack_2.length; i++) { area_2[i] = get_rect_area(stack_2[i]); }
+
+          // get concat stack
+          stack_c = [];
+          stack_c_ind = [];
+          cnt_1 = 0;
+          cnt_2 = 0;
+          while (cnt_1 < stack_1.length || cnt_2 < stack_2.length) {
+            if (cnt_1 >= stack_1.length) {
+              for (var i = cnt_2; i < stack_2.length; i++) {
+                stack_c.push(stack_2[i]);
+                stack_c_ind.push([2, i]);
+              }
+              break;
+            }
+            if (cnt_2 >= stack_2.length) {
+              for (var i = cnt_1; i < stack_1.length; i++) {
+                stack_c.push(stack_1[i]);
+                stack_c_ind.push([1, i]);
+              }
+              break;
+            }
+            if (area_2[cnt_2] > area_1[cnt_1]) {
+              stack_c.push(stack_1[cnt_1]);
+              stack_c_ind.push([1, cnt_1]);
+              cnt_1 = cnt_1 + 1;
+            }
+            else {
+              stack_c.push(stack_2[cnt_2]);
+              stack_c_ind.push([2, cnt_2]);
+              cnt_2 = cnt_2 + 1;
+            }
+          }
+          concat_rect_stack[idx] = stack_c;
+          concat_rect_stack_ind[idx] = stack_c_ind;
+        }
+
+        // Toggle connection
+        function toggle_conn(conn) {
+          done = false;
+          for (var i = return_conn_stack[idx][conn[0]].length - 1; i >= 0; i--) {
+            // Add
+            if (return_conn_stack[idx][conn[0]][i] < conn[1]) {
+              return_conn_stack[idx][conn[0]].splice(i+1, 0, conn[1]);
+              done = true;
+              break;
+            }
+            // Remove
+            if (return_conn_stack[idx][conn[0]][i] == conn[1]) {
+              return_conn_stack[idx][conn[0]].splice(i, 1);
+              done = true;
+              break;
+            }
+          }
+          // For length == 0 or smaller than all existing entries
+          if (!done) { return_conn_stack[idx][conn[0]].splice(0, 0, conn[1]); }
+        }
+
+        // Draw connected box for the highlighted person
+        function draw_conn_hl(rt_idx_1, rt_ln_width) {
+          for (var i = 0; i < return_conn_stack[idx][rt_idx_1].length; i++) {
+            rt_idx_2 = return_conn_stack[idx][rt_idx_1][i];
+            rt = return_rect_stack_2[idx][rt_idx_2];
+            fill_rect(rt[0], rt[1], ln_clr_2, hl_down_opa, rt_ln_width, false);
+          }
+        }
+
+        // Draw connected line and circle for the highlighted person
+        function draw_conn_ln(rt_idx_1, conn_ln_width, conn_ln_opa) {
+          // Draw circles
+          pt_1 = get_rect_center(return_rect_stack_1[idx][rt_idx_1]);
+          if (return_conn_stack[idx][rt_idx_1].length > 0) {
+            draw_circle(pt_1[0], pt_1[1], conn_cr_rad, conn_cr_clr, conn_ln_opa);
+          }
+          // Draw lines and circles
+          for (var i = 0; i < return_conn_stack[idx][rt_idx_1].length; i++) {
+            rt_idx_2 = return_conn_stack[idx][rt_idx_1][i];
+            rt = return_rect_stack_2[idx][rt_idx_2];
+            pt_2 = get_rect_center(rt);
+            draw_line(pt_1, pt_2, conn_ln_clr, conn_ln_width, conn_ln_opa);
+            draw_circle(pt_2[0], pt_2[1], conn_cr_rad, conn_cr_clr, conn_ln_opa);
+          }
+        }
+
+        // Get rect center
+        function get_rect_center(rect) {
+          return [(rect[0][0]+rect[0][2])/2, (rect[1][0]+rect[1][2])/2];
+        }
+
+        // Draw line
+        function draw_line(pt_1, pt_2, clr, width, opa) {
+          ctx.strokeStyle = clr;
+          ctx.lineWidth = width;
+
+          ctx.globalAlpha = opa;
+          ctx.beginPath();
+          ctx.moveTo(pt_1[0], pt_1[1]);
+          ctx.lineTo(pt_2[0], pt_2[1]);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+
+        // Draw circle
+        function draw_circle(c_x, c_y, r, clr, opa) {
+          ctx.fillStyle = clr;
+
+          ctx.globalAlpha = opa;
+          ctx.beginPath();
+          ctx.arc(c_x, c_y, r, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+
+        // Set task phase.
+        function set_phase(p) {
+          if (ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]) { return; }
+
+          if (p == 1 || p == 2 || p ==3) {
+            phase[idx] = p;
+
+            reset_temp_var();
+          }
+          else {
+            alert('set phase error');
+          }
+
+          // Display
+          draw_canvas();
+          render();
+        }
+
+        // Reset the annotation
+        function reset_annotation() {
+          return_rect_stack_1[idx] = [];
+          return_rect_stack_2[idx] = [];
+          concat_rect_stack[idx] = [];
+          concat_rect_stack_ind[idx] = [];
+          return_conn_stack[idx] = [];
+
+          reset_temp_var();
+        }
+
+        // Reset temporary variables
+        function reset_temp_var() {
+          mouse_down = false;
+          adj_on = false;
+          adj_rt_idx = -1;
+          hl_rt = null;
+          hl_rt_idx = -1;
+        }
+
+        /* function get_phase_desc() {
+          if (phase[idx] == 1) { return 'Phase 1\nPlease draw tight boxes around the bicycles being ridden.\n'; };
+          if (phase[idx] == 2) { return 'Phase 2\nPlease draw tight boxes around the people riding bicycles.\n'; };
+          if (phase[idx] == 3) { return 'Phase 3\nPlease connect the person and the bicycle(s) he is riding.\n'; };
+        } */
+
+        function pad_leading_zero_3(x) {
+          return (x < 100) ? ( (x >= 10) ? ('0' + x) : ('00' + x) ) : x;
+        }
+
+        // Use the current index to update the image and description.
+        function render() {
+          // Set up the text area
+          /* desc = [];
+          desc = desc + get_phase_desc();
+          $('#text-area').val(desc);
+
+          // Move the cursor in the textbox to the end
+          $('#text-area').focus();
+          $('#text-area').blur(); */
+
+          // Set radio
+          // $('input[name=ans-1]').val([ans_1[idx]])
+          // $('input[name=ans-2]').val([ans_2[idx]])
+
+          // Set checkbox
+          $('#not_vis').prop("checked", not_vis[idx]);
+
+          // Enable and disable buttons
+          if (enabled) {
+            $('#phs1-btn').prop('disabled', ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]);
+            $('#phs2-btn').prop('disabled', ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]);
+            $('#phs3-btn').prop('disabled', ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]);
+            $('#reset-btn').prop('disabled', ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]);
+            $('#not_vis').prop('disabled', ans_1[idx] != 'n' || ans_2[idx] != 'n');
+            checkbox_txt_clr = (ans_1[idx] != 'n' || ans_2[idx] != 'n') ? '#808080':'#000000';
+            $('#checkbox-label').css({'color': checkbox_txt_clr});
+          }
+
+          // Create effect for the buttons
+          for (var i = 1; i <= 3; i++) {
+            if (i == phase[idx]) {
+              $('#phs' + i + '-btn').css({
+                'border-color': '#2E2E2E',
+                'border-width': 7,
+                'font-weight': 'bold',
+                'color': '#2E2E2E'
+              });
+            }
+            else {
+              if (i == 1) { bdcolor = '#428bca'; }
+              if (i == 2) { bdcolor = '#5cb85c'; }
+              if (i == 3) { bdcolor = '#f0ad4e'; }
+              $('#phs' + i + '-btn').css({
+                'border-color': bdcolor,
+                'border-width': 0,
+                'font-weight': 'normal',
+                'color': 'white'
+              });
+            }
+          }
+
+          // Refresh the counter
+          $('.counter-top').text(pad_leading_zero_3(idx + 1));
+          $('.counter-bottom').text(pad_leading_zero_3(input.length));
+
+          // If the UI is enabled, enable or disable the buttons depending on
+          // the index.
+          if (enabled) {
+            var prev_btn = $('#prev-btn');
+            var next_btn = $('#next-btn');
+            prev_btn.prop('disabled', true);
+            next_btn.prop('disabled', true);
+            if (idx > 0) {
+              prev_btn.prop('disabled', false);
+            }
+            if (idx < input.length - 1) {
+              next_btn.prop('disabled', false);
+            }
+          }
+        }
+
+        // Update the index, and save the text in the text area.
+        function set_idx(new_idx) {
+          if (new_idx < 0 || new_idx >= input.length) return;
+
+          // Run checks
+          if (new_idx > idx && !check_question_answered()) {
+            alert('Please answer the questions first');
+            return;
+          }
+          if (new_idx > idx && !check_not_empty()) {
+            // alert('Based on your answers, you should annotate this picture. ' +
+            //   'The annotation is not finished yet. ' +
+            alert('The annotation is not finished yet. ' +
+              'Please draw at least one person box and one object box, check the square box if the person or object is not visible in the picture');
+            return;
+          }
+          if (new_idx > idx && !check_all_connect()) {
+            alert('You still have unconnected boxes. ' +
+              'Please make sure all boxes are connected or remove the unconnected ones.');
+            return;
+          }
+
+          // Set idx
+          idx = new_idx;
+
+          // Set description
+          $('#description').text(input[idx][1]);
+
+          // Set object name
+          $('.obj-name').text(input[idx][2]);
+
+          // Init canvas
+          init_canvas();
+
+          // Reset variables
+          reset_temp_var();
+
+          // Update status; need to do this after the radios have been updated in init_canvas -> render
+          update_task_state();
+        }
+
+        // Check questions answered
+        function check_question_answered() {
+          return ans_1[idx] != undefined && ans_2[idx] != undefined
+        }
+
+        // Check annotation not empty
+        function check_not_empty() {
+          return (ans_1[idx] != 'n' || ans_2[idx] != 'n' || not_vis[idx]) ||
+                 (return_rect_stack_1[idx].length != 0 && return_rect_stack_2[idx].length != 0)
+        }
+
+        // Check no unconnected box
+        function check_all_connect() {
+          check = true;
+          concat_rect_2 = [];
+          _.each(return_conn_stack[idx], function(conn) {
+            if (conn.length == 0) { check = false; }
+            for (var i = 0; i < conn.length; i++) {
+              if (concat_rect_2.indexOf(conn[i]) == -1) { concat_rect_2.push(conn[i]); }
+            }
+          });
+          return check && (concat_rect_2.length == return_rect_stack_2[idx].length);
+        }
+
+        function main(){
+          input = simpleamt.getInput(DEFAULT_INPUT);
+
+          if (!simpleamt.isPreview()) {
+            enable_hit();
+          }
+
+          // initialization
+          _.each(input, function() { ans_1.push('n'); });
+          _.each(input, function() { ans_2.push('n'); });
+          _.each(input, function() { not_vis.push(false); });
+          _.each(input, function() { phase.push(1); });
+          _.each(input, function() { return_rect_stack_1.push([]); return_rect_stack_2.push([]); });
+          _.each(input, function() { concat_rect_stack.push([]); concat_rect_stack_ind.push([]); });
+          _.each(input, function() { return_conn_stack.push([]); });
+
+          // Set description
+          $('#description').text(input[0][1]);
+
+          // Set object name
+          $('.obj-name').text(input[0][2]);
+
+          // Preload all images
+          var imgs = [];
+          _.each(input, function(img_data) {
+            var img = new Image();
+            img.onload = function() { console.log('loaded image from ' + img_data[0]); };
+            img.src = img_data[0];
+          });
+          init_canvas();
+
+          // Set radio function
+          /*$("#form-1").change(function() {
+            ans_1[idx] = $('input[name=ans-1]:checked').val();
+            update_task_state();
+          });
+          $("#form-2").change(function() {
+            ans_2[idx] = $('input[name=ans-2]:checked').val();
+            update_task_state();
+          });*/
+
+          // Set checkbox function
+          $("#not_vis").change(function() {
+            not_vis[idx] = $('#not_vis').prop("checked");
+            update_task_state();
+          });
+        }
+
+        // Update task state
+        function update_task_state() {
+          // Update canvas functions
+          /*if ($('input[name=ans-1]:checked').val() != 'n' ||
+              $('input[name=ans-2]:checked').val() != 'n') {
+            reset_annotation();
+          }*/
+          if ($('#not_vis').prop("checked")) { reset_annotation(); }
+          init_canvas();
+          // Set guiding sentence radio
+          /*if ($('input[name=ans-1]:checked').val() == 'n' &&
+              $('input[name=ans-2]:checked').val() == 'n') {
+            $('#guide-radio').text('Please start annotating this picture.');
+          }
+          if (($('input[name=ans-1]:checked').val() != undefined &&
+               $('input[name=ans-2]:checked').val() != undefined) &&
+              ($('input[name=ans-1]:checked').val() == 'y' ||
+               $('input[name=ans-2]:checked').val() == 'y')) {
+            $('#guide-radio').text('Click Next to skip this picture.');
+          }
+          if (($('input[name=ans-1]:checked').val() == undefined) ||
+              ($('input[name=ans-2]:checked').val() == undefined)) {
+            $('#guide-radio').text('');
+          }*/
+          // Set guiding sentence check
+          if ($('#not_vis').prop("checked")) {
+            $('#guide-check').text('Click Next to skip this picture.');
+          }
+          else {
+            $('#guide-check').text('');
+          }
+        }
+
+        // Enable the UI.
+        function enable_hit() {
+          enabled = true;
+
+          // Enable components
+          $('#next-btn').click(function() { set_idx(idx + 1); });
+          $('#prev-btn').click(function() { set_idx(idx - 1); });
+          $('#text-area').prop('disabled', false);
+          $('#submit-btn').prop('disabled', false);
+
+          $('#phs1-btn').click(function() { set_phase(1); });
+          $('#phs2-btn').click(function() { set_phase(2); });
+          $('#phs3-btn').click(function() { set_phase(3); });
+          $('#reset-btn').click(function() { reset_annotation(); init_canvas(); });
+          // $('input[name=ans-1]').prop('disabled', false);
+          // $('input[name=ans-2]').prop('disabled', false);
+          $('#phs1-btn').prop('disabled', false);
+          $('#phs2-btn').prop('disabled', false);
+          $('#phs3-btn').prop('disabled', false);
+          $('#reset-btn').prop('disabled', false);
+          $('#not_vis').prop('disabled', false);
+
+          $('html').keydown(function(event) {
+            // if(event.which == 39) { set_idx(idx + 1); }
+            // if(event.which == 37) { set_idx(idx - 1); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'A') { set_idx(idx - 1); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'G') { set_idx(idx + 1); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'S') { set_phase(1); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'D') { set_phase(2); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'F') { set_phase(3); }
+            if (String.fromCharCode(event.keyCode || event.which) == 'R') { reset_annotation(); init_canvas(); }
+          })
+
+          // Set up submit handler.
+          simpleamt.setupSubmit();
+          $('#submit-btn').click(function() {
+            // Run checks
+            if (!check_question_answered()) {
+              alert('Please answer the questions first');
+              return;
+            }
+            if (!check_not_empty()) {
+              // alert('Based on your answers, you should annotate this picture. ' +
+              //   'The annotation is not finished yet. ' +
+              alert('The annotation is not finished yet. ' +
+                'Please draw at least one person box and one object box, or check the square box if the person or object is not visible in the picture.');
+              return false;
+            }
+            if (!check_all_connect()) {
+              alert('You still have unconnected boxes. ' +
+                'Please make sure all boxes are connected or remove the unconnected ones.');
+              return false;
+            }
+            if (idx != input.length - 1) {
+              alert('You can only submit after you get to the last picture.');
+              return false;
+            } 
+
+            // Generate output
+            var output = _.map(_.zip(input, ans_1, ans_2, not_vis, return_rect_stack_1, return_rect_stack_2, return_conn_stack), function(x) {
+              image_data = x[0];
+              t_ans_1 = x[1];
+              t_ans_2 = x[2];
+              t_not_vis = x[3] ? 'y':'n';
+              t_rect_1 = x[4].toString();
+              t_rect_2 = x[5].toString();
+              t_conn = '';
+              for (var i = 0; i < x[6].length; i++) {
+                t_conn = t_conn + x[6][i].toString();
+                if (i != x[6].length - 1) { t_conn = t_conn + ';'; }
+              }
+              console.log(image_data);
+              console.log(t_ans_1);
+              console.log(t_ans_2);
+              console.log(t_rect_1);
+              console.log(t_rect_2);
+              console.log(t_conn);
+
+              return {'image_data': image_data, 'ans_1': t_ans_1, 'ans_2': t_ans_2, 'not_vis': t_not_vis, 'rect_1': t_rect_1, 'rect_2': t_rect_2, 'conn': t_conn};
+            });
+
+            // Set output
+            simpleamt.setOutput(output);
+          });
+        }
+
+        main();
+      });
+    </script>
+  </body>
+</html>
