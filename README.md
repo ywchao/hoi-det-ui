@@ -21,7 +21,7 @@ Please cite HOI-Det-UI if it helps your research:
 
 ### Demo
 
-[Click here](http://napoli18.eecs.umich.edu/public_html/demo/hoi-det-ui/demo_20171121.html) to experience the UI!
+[Click here](http://www.umich.edu/~ywchao/hico/hoi-det-ui/demo_20171121.html) to experience the UI!
 
 ### Collecting Annotations on Amazon Mechanical Turk
 
