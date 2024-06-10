@@ -6,7 +6,7 @@ Created by Yu-Wei Chao and Xieyang Liu, this is the UI for collecting the annota
 Yu-Wei Chao, Yunfan Liu, Xieyang Liu, Huayi Zeng, Jia Deng  
 IEEE Winter Conference on Applications of Computer Vision (WACV), 2018  
 
-Check out the [project site](http://www.umich.edu/~ywchao/hico/) for more details.
+Check out the [project site](https://umich-ywchao-hico.github.io/) for more details.
 
 ### Citing HOI-Det-UI
 
@@ -21,7 +21,7 @@ Please cite HOI-Det-UI if it helps your research:
 
 ### Demo
 
-[Click here](http://www.umich.edu/~ywchao/hico/hoi-det-ui/demo_20171121.html) to experience the UI!
+[Click here](https://umich-ywchao-hico.github.io/hoi-det-ui/demo_20171121.html) to experience the UI!
 
 ### Collecting Annotations on Amazon Mechanical Turk
 
